@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#176b57">
+  <meta name="description" content="LibCentral Library Management System">
+  <title>LibCentral | Library Management System</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header class="navbar">
+  <div class="nav-container">
+    <a href="#" class="logo" onclick="switchView('home-view');return false;">
+      <img
+        src="./library-logo.png"
+        alt="LibCentral Logo"
+        class="logo-image"
+      >
+      <span>LibCentral</span>
+    </a>
+
+    <button class="hamburger" id="hamburger-btn"
+      aria-label="Open navigation" aria-expanded="false"
+      aria-controls="nav-links" type="button">☰</button>
+
+    <ul class="nav-links" id="nav-links">
+      <li><a href="#" class="nav-link active"
+        onclick="switchView('home-view');return false;">Home</a></li>
+      <li><a href="#" class="nav-link"
+        onclick="switchView('catalog-view');return false;">Catalog</a></li>
+      <li><a href="#" class="nav-link"
+        onclick="switchView('announcements-view');return false;">Announcements</a></li>
+      <li id="profile-link" style="display:none">
+        <a href="#" class="nav-link"
+        onclick="switchView('profile-view');return false;">My Profile</a>
+      </li>
+      <li id="member-link" style="display:none">
+        <a href="#" class="nav-link"
+        onclick="switchView('member-dashboard-view');return false;">My Dashboard</a>
+      </li>
+      <li id="librarian-link" style="display:none">
+        <a href="#" class="nav-link"
+        onclick="switchView('librarian-dashboard-view');return false;">Librarian</a>
+      </li>
+      <li id="admin-link" style="display:none">
+        <a href="#" class="nav-link"
+        onclick="switchView('admin-dashboard-view');return false;">Admin</a>
+      </li>
+    </ul>
+
+    <div class="nav-actions" id="nav-auth-actions">
+      <button class="sound-toggle" type="button" onclick="toggleSound()" aria-label="Mute sound effects" title="Sound on">🔊</button>
+      <button class="btn btn-outline" type="button" onclick="switchView('login-view')">Login</button>
+      <button class="btn btn-primary" type="button" onclick="switchView('register-view')">Register</button>
+    </div>
+
+    <div class="nav-actions" id="nav-user-actions" style="display:none">
+      <button class="sound-toggle" type="button" onclick="toggleSound()" aria-label="Mute sound effects" title="Sound on">🔊</button>
+      <span class="user-avatar" id="user-avatar" aria-hidden="true"></span>
+      <span class="user-name" id="user-display-name"></span>
+      <button class="btn btn-outline" type="button" onclick="logout()">Logout</button>
+    </div>
+  </div>
+</header>
+
+<main class="main-content">
+
+  <!-- HOME -->
+  <section class="view-section active" id="home-view">
+
+    <section class="hero-library-bg">
+      <div class="hero-content">
+        <span class="hero-badge">WELCOME TO LIBCENTRAL</span>
+        <h1>Your Space to Focus &amp; Grow</h1>
+        <p>
+          A quiet place to study, thousands of books to explore, and resources to help you succeed.
+        </p>
+        <div class="hero-buttons">
+          <button class="btn btn-primary" type="button"
+            onclick="switchView('catalog-view')">Explore Books →</button>
+          <button class="btn btn-glass" type="button"
+            onclick="switchView('login-view')">Member Login</button>
+        </div>
+      </div>
+
+      <!-- PRESERVED BACKGROUND: library-background.png -->
+      <aside class="library-info-card">
+        <div class="library-info-heading">
+          <span class="info-icon">▤</span>
+          <div>
+            <h2>Library Information</h2>
+            <small>Visit us and explore more</small>
+          </div>
+        </div>
+
+        <div class="library-hours">
+          <div class="hours-row">
+            <span>☀</span>
+            <span class="hours-day">Monday – Friday</span>
+            <strong>8:00 AM – 5:00 PM</strong>
+          </div>
+          <div class="hours-row">
+            <span>◷</span>
+            <span class="hours-day">Saturday</span>
+            <strong>8:00 AM – 12:00 PM</strong>
+          </div>
+          <div class="hours-row">
+            <span>✕</span>
+            <span class="hours-day">Sunday</span>
+            <strong>Closed</strong>
+          </div>
+        </div>
+
+        <div class="reading-message">
+          <span class="reading-icon">✦</span>
+          <div>
+            <strong>Knowledge starts with reading.</strong>
+            <p>Discover something new every day.</p>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <div class="container section">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">LIBRARY OVERVIEW</span>
+          <h2>Explore our library</h2>
+        </div>
+        <p>Your learning journey starts with the right book.</p>
+      </div>
+
+      <div class="stats-grid">
+        <article class="stat-card">
+          <span class="stat-icon">▤</span>
+          <span class="stat-label">Total Books</span>
+          <strong id="home-total-books">0</strong>
+          <small>Books in collection</small>
+        </article>
+        <article class="stat-card">
+          <span class="stat-icon">✓</span>
+          <span class="stat-label">Available Books</span>
+          <strong id="home-available-books">0</strong>
+          <small>Ready to borrow</small>
+        </article>
+        <article class="stat-card">
+          <span class="stat-icon">♧</span>
+          <span class="stat-label">Active Loans</span>
+          <strong id="home-active-loans">0</strong>
+          <small>Currently borrowed</small>
+        </article>
+        <article class="stat-card">
+          <span class="stat-icon">♙</span>
+          <span class="stat-label">Registered Members</span>
+          <strong id="home-total-members">0</strong>
+          <small>Student accounts</small>
+        </article>
+      </div>
+
+      <div class="section-heading featured-heading">
+        <div>
+          <span class="eyebrow">HANDPICKED COLLECTION</span>
+          <h2>Featured books</h2>
+        </div>
+        <button class="btn btn-outline" type="button"
+          onclick="switchView('catalog-view')">View all books →</button>
+      </div>
+
+      <div class="book-grid" id="home-featured-books"></div>
+
+      <div class="feature-grid">
+        <article class="feature-card">
+          <span class="feature-icon">⌕</span>
+          <h3>Discover Books</h3>
+          <p>Search and explore books by title, author, ISBN, and category.</p>
+        </article>
+        <article class="feature-card">
+          <span class="feature-icon">▣</span>
+          <h3>Manage Borrowing</h3>
+          <p>Track borrowed books, due dates, fines, and borrowing history.</p>
+        </article>
+        <article class="feature-card">
+          <span class="feature-icon">♧</span>
+          <h3>Reserve Books</h3>
+          <p>Place reservations and monitor your reservation status.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATALOG -->
+  <section class="view-section" id="catalog-view">
+    <div class="page-banner">
+      <div>
+        <span class="eyebrow">EXPLORE OUR COLLECTION</span>
+        <h1>Library Catalog</h1>
+        <p>Find your next favorite book from our collection.</p>
+      </div>
+      <span class="banner-icon">▤</span>
+    </div>
+
+    <div class="container section">
+      <div class="panel catalog-panel">
+        <div class="catalog-toolbar">
+          <div class="field search-field">
+            <label for="catalog-search-input">Search books</label>
+            <input id="catalog-search-input" type="search"
+              placeholder="Title, author, genre, book no., ISBN...">
+          </div>
+          <div class="field">
+            <label for="catalog-category-filter">Category</label>
+            <select id="catalog-category-filter">
+              <option value="ALL">All Categories</option>
+              <option>Computer Science</option>
+              <option>Literature</option>
+              <option>Education</option>
+              <option>Science</option>
+              <option>History</option>
+              <option>Psychology</option>
+              <option>Mathematics</option>
+              <option>Business</option>
+              <option>General</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="catalog-genre-filter">Genre</label>
+            <select id="catalog-genre-filter">
+              <option value="ALL">All Genres</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="catalog-status-filter">Availability</label>
+            <select id="catalog-status-filter">
+              <option value="ALL">All Books</option>
+              <option value="Available">Available</option>
+              <option value="Checked Out">Checked Out</option>
+              <option value="On Hold">On Hold</option>
+              <option value="Withdrawn">Withdrawn</option>
+            </select>
+          </div>
+          <button class="btn btn-outline filter-button" type="button"
+            onclick="resetCatalogFilters()">Clear Filters</button>
+        </div>
+        <div class="catalog-results-info">
+          <span id="catalog-results-count">0 books found</span>
+          <span>Updated library collection</span>
+        </div>
+      </div>
+
+      <div class="book-grid" id="catalog-book-grid"></div>
+    </div>
+  </section>
+
+  <!-- ANNOUNCEMENTS -->
+  <section class="view-section" id="announcements-view">
+    <div class="page-banner">
+      <div>
+        <span class="eyebrow">STAY INFORMED</span>
+        <h1>Announcements</h1>
+        <p>Library news, schedules, and important updates.</p>
+      </div>
+      <span class="banner-icon">♧</span>
+    </div>
+    <div class="container section">
+      <div class="announcement-list">
+        <article class="announcement-card">
+          <span class="announcement-symbol">📚</span>
+          <div>
+            <h3>Welcome to LibCentral</h3>
+            <p>Explore the library catalog and discover learning resources.</p>
+            <small>Library Information</small>
+          </div>
+        </article>
+        <article class="announcement-card">
+          <span class="announcement-symbol">📖</span>
+          <div>
+            <h3>Book Borrowing Guidelines</h3>
+            <p>Students can borrow up to 5 books and choose their own return date (up to 30 days). Late returns are charged ₱1.00 per day, and fines can be paid online from your dashboard.</p>
+            <small>Library Reminder</small>
+          </div>
+        </article>
+        <article class="announcement-card">
+          <span class="announcement-symbol">✦</span>
+          <div>
+            <h3>Keep Reading</h3>
+            <p>Make reading part of your daily learning routine.</p>
+            <small>Library Community</small>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- LOGIN -->
+  <section class="view-section" id="login-view">
+    <div class="auth-layout">
+      <div class="auth-art">
+        <div class="hero-badge">LIBCENTRAL MEMBERS</div>
+        <h1>Welcome back!</h1>
+        <p>Sign in to manage your loans, reserve books, and monitor your reading journey.</p>
+        <div class="auth-decoration">📚</div>
+      </div>
+      <form class="auth-form" onsubmit="handleLogin(event)">
+        <span class="eyebrow">YOUR LIBRARY ACCOUNT</span>
+        <h2>Sign in</h2>
+        <p>Enter your account information to continue.</p>
+        <div class="field">
+          <label for="login-email">Email address</label>
+          <input type="email" id="login-email" required
+            autocomplete="username" placeholder="name@example.com">
+        </div>
+        <div class="field">
+          <label for="login-password">Password</label>
+          <input type="password" id="login-password" required
+            autocomplete="current-password" placeholder="Enter password">
+          <button type="button" class="pw-toggle" aria-label="Show password" aria-pressed="false"
+            onclick="var i=document.getElementById('login-password'),s=i.type==='password';i.type=s?'text':'password';this.setAttribute('aria-pressed',s);this.setAttribute('aria-label',s?'Hide password':'Show password')">
+            <svg class="eye-open" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg class="eye-off" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+          </button>
+        </div>
+        <button class="btn btn-primary btn-block" type="submit">Sign In →</button>
+        <p class="auth-switch">Don't have an account?
+          <button type="button" onclick="switchView('register-view')">Create account</button>
+        </p>
+        <p class="demo-hint">Demo Admin: admin@lib.edu / 123456</p>
+        <p class="demo-hint">Demo Librarian: librarian@lib.edu / 123456</p>
+        <p class="demo-hint">Demo Student: student@lib.edu / 123456</p>
+      </form>
+    </div>
+  </section>
+
+  <!-- REGISTER -->
+  <section class="view-section" id="register-view">
+    <div class="auth-layout">
+      <div class="auth-art">
+        <span class="hero-badge">JOIN OUR COMMUNITY</span>
+        <h1>Start your reading journey.</h1>
+        <p>Create your LibCentral account to access your library services.</p>
+        <div class="auth-decoration">✦</div>
+      </div>
+      <form class="auth-form" onsubmit="handleSignup(event)">
+        <span class="eyebrow">NEW MEMBER</span>
+        <h2>Create an account</h2>
+        <p>Complete the information below. New accounts must be approved by the library admin before you can sign in.</p>
+        <div class="field">
+          <label for="signup-name">Full name</label>
+          <input id="signup-name" type="text" required minlength="2"
+            maxlength="100" autocomplete="name" placeholder="Your full name">
+        </div>
+        <div class="field">
+          <label for="signup-email">Email address</label>
+          <input id="signup-email" type="email" required
+            autocomplete="email" placeholder="name@example.com">
+        </div>
+        <div class="field">
+          <label for="signup-password">Password</label>
+          <input id="signup-password" type="password" required
+            minlength="6" autocomplete="new-password"
+            placeholder="At least 6 characters">
+          <button type="button" class="pw-toggle" aria-label="Show password" aria-pressed="false"
+            onclick="var i=document.getElementById('signup-password'),s=i.type==='password';i.type=s?'text':'password';this.setAttribute('aria-pressed',s);this.setAttribute('aria-label',s?'Hide password':'Show password')">
+            <svg class="eye-open" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg class="eye-off" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+          </button>
+        </div>
+        <button class="btn btn-primary btn-block" type="submit">Create Account →</button>
+        <p class="auth-switch">Already registered?
+          <button type="button" onclick="switchView('login-view')">Sign in</button>
+        </p>
+      </form>
+    </div>
+  </section>
+
+  <!-- BOOK DETAILS -->
+  <section class="view-section" id="book-details-view">
+    <div class="page-banner">
+      <div>
+        <span class="eyebrow">BOOK INFORMATION</span>
+        <h1>Book Details</h1>
+        <p>View book information and availability.</p>
+      </div>
+      <button class="btn btn-outline" type="button" onclick="switchView('catalog-view')">← Back to Catalog</button>
+    </div>
+    <div class="container section">
+      <div id="book-details-container"></div>
+    </div>
+  </section>
+
+  <!-- PROFILE -->
+  <section class="view-section" id="profile-view">
+    <div class="page-banner">
+      <div>
+        <span class="eyebrow">YOUR ACCOUNT</span>
+        <h1>My Profile</h1>
+        <p>Update your name, email and password.</p>
+      </div>
+      <span class="banner-icon">♙</span>
+    </div>
+    <div class="container section">
+      <div class="profile-layout">
+        <div class="panel profile-card">
+          <span class="user-avatar profile-avatar" id="profile-avatar" aria-hidden="true"></span>
+          <h2 id="profile-heading-name"></h2>
+          <div class="receipt-list" id="profile-summary"></div>
+        </div>
+        <form class="panel" onsubmit="handleProfileSave(event)" autocomplete="off">
+          <h2 class="section-title">Profile details</h2>
+          <div class="form-grid">
+            <div class="field">
+              <label for="profile-name">Full name</label>
+              <input id="profile-name" required minlength="2" maxlength="100">
+            </div>
+            <div class="field">
+              <label for="profile-role">Account type</label>
+              <input id="profile-role" readonly>
+            </div>
+            <div class="field field-full">
+              <label for="profile-email">Email address</label>
+              <input id="profile-email" type="email" required>
+            </div>
+          </div>
+          <h2 class="section-title">Change password (optional)</h2>
+          <div class="form-grid">
+            <div class="field field-full">
+              <label for="profile-current-password">Current password (needed to change email or password)</label>
+              <input id="profile-current-password" type="password" autocomplete="current-password">
+            </div>
+            <div class="field">
+              <label for="profile-new-password">New password</label>
+              <input id="profile-new-password" type="password" minlength="6" autocomplete="new-password" placeholder="At least 6 characters">
+            </div>
+            <div class="field">
+              <label for="profile-confirm-password">Confirm new password</label>
+              <input id="profile-confirm-password" type="password" autocomplete="new-password">
+            </div>
+          </div>
+          <div class="form-button-row">
+            <button class="btn btn-primary" type="submit">Save Profile</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- MEMBER DASHBOARD -->
+  <section class="view-section" id="member-dashboard-view">
+    <div class="page-banner">
+      <div>
+        <span class="eyebrow">MEMBER PORTAL</span>
+        <h1>My Dashboard</h1>
+        <p>Manage your borrowing activity, reservations and fines.</p>
+      </div>
+      <span class="banner-icon">♙</span>
+    </div>
+
+    <div class="container section">
+      <div class="welcome-strip">
+        <div><span class="eyebrow">YOUR ACCOUNT</span>
+          <h2>Welcome, <span id="member-welcome-name">Member</span>!</h2>
+          <p>Here is your current library activity.</p>
+        </div>
+        <div class="welcome-actions">
+          <button class="btn btn-primary" type="button" onclick="startPaymentTest()"
+            title="Creates a loan that is due in 1 minute, then adds a ₱1.00 fine every minute">🧪 Payment Test (due in 1 min)</button>
+          <button class="btn btn-outline" type="button" onclick="switchView('catalog-view')">Browse Books</button>
+        </div>
+      </div>
+
+      <div id="member-due-alerts"></div>
+
+      <div class="stats-grid">
+        <article class="stat-card">
+          <span class="stat-icon">▣</span>
+          <span class="stat-label">Active Loans</span>
+          <strong id="member-active-loans-count">0</strong>
+        </article>
+        <article class="stat-card">
+          <span class="stat-icon">♧</span>
+          <span class="stat-label">Reservations</span>
+          <strong id="member-reservations-count">0</strong>
+        </article>
+        <article class="stat-card fine-card">
+          <span class="stat-icon">₱</span>
+          <span class="stat-label">Outstanding Fines</span>
+          <strong id="member-total-fines">₱0.00</strong>
+          <button class="btn btn-primary btn-sm pay-all-btn" id="pay-fines-btn" type="button" onclick="openPaymentModal()" style="display:none">
+            💳 Pay Fines Now
+          </button>
+        </article>
+      </div>
+
+      <div class="panel dashboard-section">
+        <h2 class="section-title">My Active Loans</h2>
+        <div class="table-container">
+          <table>
+            <thead><tr>
+              <th>Book</th><th>Borrowed</th><th>Return By</th>
+              <th>Fine</th><th>Status</th><th>Action</th>
+            </tr></thead>
+            <tbody id="member-loans-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel dashboard-section">
+        <h2 class="section-title">Borrowing History</h2>
+        <div class="table-container">
+          <table>
+            <thead><tr>
+              <th>Book</th><th>Borrowed</th><th>Returned</th><th>Fine Paid</th>
+            </tr></thead>
+            <tbody id="member-history-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel dashboard-section">
+        <h2 class="section-title">My Reservations</h2>
+        <div class="table-container">
+          <table>
+            <thead><tr>
+              <th>Book</th><th>Date</th><th>Queue</th><th>Action</th>
+            </tr></thead>
+            <tbody id="member-holds-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel dashboard-section">
+        <h2 class="section-title">Payment History</h2>
+        <div class="table-container">
+          <table>
+            <thead><tr>
+              <th>Reference</th><th>Date</th><th>Method</th><th>Amount</th>
+            </tr></thead>
+            <tbody id="member-payments-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LIBRARIAN DASHBOARD -->
+  <section class="view-section" id="librarian-dashboard-view">
+    <div class="page-banner">
+      <div>
+        <span class="eyebrow">LIBRARY STAFF</span>
+        <h1>Librarian Dashboard</h1>
+        <p>Check books out and in, and manage student reservations.</p>
+      </div>
+      <span class="banner-icon">▣</span>
+    </div>
+    <div class="container section">
+      <div id="librarian-alerts"></div>
+
+      <div class="panel dashboard-section">
+        <h2 class="section-title">Check-out Book (manual issue)</h2>
+        <form id="lib-issue-form" onsubmit="handleIssueBook(event,'lib-issue')" class="form-grid">
+          <div class="field">
+            <label for="lib-issue-user-select">Student</label>
+            <select id="lib-issue-user-select" required></select>
+          </div>
+          <div class="field">
+            <label for="lib-issue-book-select">Book</label>
+            <select id="lib-issue-book-select" required></select>
+          </div>
+          <div class="field">
+            <label for="lib-issue-due-input">Return date</label>
+            <input id="lib-issue-due-input" type="date" required>
+          </div>
+          <div class="field field-submit">
+            <button class="btn btn-primary" type="submit">Check Out</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="panel dashboard-section">
+        <h2 class="section-title">Pending Reservations</h2>
+        <div class="table-container">
+          <table>
+            <thead><tr>
+              <th>Member</th><th>Book</th><th>Reserved / Queue</th><th>Action</th>
+            </tr></thead>
+            <tbody id="librarian-reservations-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel dashboard-section">
+        <h2 class="section-title">Active Borrowing (check-in)</h2>
+        <div class="table-container">
+          <table>
+            <thead><tr>
+              <th>Student</th><th>Book</th><th>Return By</th><th>Status / Fine</th><th>Action</th>
+            </tr></thead>
+            <tbody id="librarian-loans-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ADMIN DASHBOARD -->
+  <section class="view-section" id="admin-dashboard-view">
+    <div class="page-banner">
+      <div>
+        <span class="eyebrow">SYSTEM MANAGEMENT</span>
+        <h1>Admin Dashboard</h1>
+        <p>Manage inventory, members, borrowing and penalties.</p>
+      </div>
+      <span class="banner-icon">⚙</span>
+    </div>
+
+    <div class="container section">
+      <div id="admin-alerts"></div>
+
+      <div class="stats-grid">
+        <article class="stat-card">
+          <span class="stat-icon">▤</span>
+          <span class="stat-label">Total Books</span>
+          <strong id="admin-total-books">0</strong>
+        </article>
+        <article class="stat-card">
+          <span class="stat-icon">▣</span>
+          <span class="stat-label">Issued Books</span>
+          <strong id="admin-issued-books">0</strong>
+        </article>
+        <article class="stat-card">
+          <span class="stat-icon">◷</span>
+          <span class="stat-label">Overdue Books</span>
+          <strong id="admin-overdue-books">0</strong>
+        </article>
+        <article class="stat-card">
+          <span class="stat-icon">♙</span>
+          <span class="stat-label">Total Students</span>
+          <strong id="admin-total-users">0</strong>
+        </article>
+      </div>
+
+      <div class="panel admin-panel">
+        <div class="tab-navigation" role="tablist">
+          <button class="tab-btn active" role="tab" type="button" aria-selected="true"
+            onclick="switchTab('admin-issue-tab',this)">Issue / Return</button>
+          <button class="tab-btn" role="tab" type="button" aria-selected="false"
+            onclick="switchTab('admin-inventory-tab',this)">Inventory</button>
+          <button class="tab-btn" role="tab" type="button" aria-selected="false"
+            onclick="switchTab('admin-users-tab',this)" id="admin-users-tab-btn">Users</button>
+          <button class="tab-btn" role="tab" type="button" aria-selected="false"
+            onclick="switchTab('admin-insights-tab',this)">Insights</button>
+          <button class="tab-btn" role="tab" type="button" aria-selected="false"
+            onclick="switchTab('admin-payments-tab',this)">Payments</button>
+        </div>
+
+        <!-- ISSUE TAB -->
+        <div class="tab-content" id="admin-issue-tab">
+          <h2 class="section-title">Issue a Book (digital check-out)</h2>
+          <form id="issue-book-form" onsubmit="handleIssueBook(event,'issue')" class="form-grid">
+            <div class="field">
+              <label for="issue-user-select">Select Student</label>
+              <select id="issue-user-select" required></select>
+            </div>
+            <div class="field">
+              <label for="issue-book-select">Select Book</label>
+              <select id="issue-book-select" required></select>
+            </div>
+            <div class="field">
+              <label for="issue-due-input">Return date</label>
+              <input id="issue-due-input" type="date" required>
+            </div>
+            <div class="field field-submit">
+              <button class="btn btn-primary" type="submit">Issue Book</button>
+            </div>
+          </form>
+
+          <h2 class="section-title">Active Borrowing Transactions</h2>
+          <div class="table-container">
+            <table>
+              <thead><tr>
+                <th>Student</th><th>Book</th><th>Return By</th>
+                <th>Fine</th><th>Action</th>
+              </tr></thead>
+              <tbody id="admin-loans-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- INVENTORY TAB -->
+        <div class="tab-content" id="admin-inventory-tab" style="display:none">
+          <h2 class="section-title" id="book-form-title">Add New Book</h2>
+          <form id="add-book-form" onsubmit="handleSaveBook(event)" class="form-grid">
+            <div class="field">
+              <label for="book-title-input">Book Title</label>
+              <input id="book-title-input" required maxlength="150"
+                placeholder="Enter book title">
+            </div>
+            <div class="field">
+              <label for="book-author-input">Author</label>
+              <input id="book-author-input" required maxlength="120"
+                placeholder="Author name">
+            </div>
+            <div class="field">
+              <label for="book-category-input">Category</label>
+              <select id="book-category-input">
+                <option>Computer Science</option>
+                <option>Literature</option>
+                <option>Education</option>
+                <option>Science</option>
+                <option>History</option>
+                <option>Psychology</option>
+                <option>Mathematics</option>
+                <option>Business</option>
+                <option>General</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="book-genre-input">Genre</label>
+              <input id="book-genre-input" list="genre-options" maxlength="60"
+                placeholder="e.g. Fantasy, Programming">
+              <datalist id="genre-options"></datalist>
+            </div>
+            <div class="field">
+              <label for="book-isbn-input">ISBN</label>
+              <input id="book-isbn-input" required maxlength="30"
+                placeholder="Book ISBN">
+            </div>
+            <div class="field">
+              <label for="book-no-input">Book number (optional)</label>
+              <input id="book-no-input" maxlength="20"
+                placeholder="Auto: next LC-number">
+            </div>
+            <div class="field">
+              <label for="book-cover-file">Upload cover image</label>
+              <input id="book-cover-file" type="file" accept="image/*"
+                onchange="handleCoverFile(event)">
+            </div>
+            <div class="field">
+              <label for="book-cover-input">...or cover image link (optional)</label>
+              <input id="book-cover-input" type="url"
+                placeholder="https://example.com/cover.jpg">
+            </div>
+            <div class="field field-full">
+              <img id="book-cover-preview" class="cover-preview" alt="Cover preview" style="display:none">
+            </div>
+            <div class="field field-submit field-full">
+              <div class="form-button-row">
+                <button class="btn btn-outline" id="book-cancel-btn" type="button"
+                  onclick="resetBookForm()" style="display:none">Cancel Edit</button>
+                <button class="btn btn-primary" id="book-save-btn" type="submit">Add Book</button>
+              </div>
+            </div>
+          </form>
+
+          <h2 class="section-title">Book Inventory</h2>
+          <div class="table-container">
+            <table>
+              <thead><tr>
+                <th>Cover</th><th>Book</th><th>Book No.</th><th>Category / Genre</th>
+                <th>ISBN</th><th>Status</th><th>Action</th>
+              </tr></thead>
+              <tbody id="admin-inventory-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- USERS TAB -->
+        <div class="tab-content" id="admin-users-tab" style="display:none">
+          <h2 class="section-title">Members &amp; Accounts</h2>
+          <p class="muted-note">New registrations stay <strong>Pending</strong> until you approve them. Blocked accounts cannot sign in.</p>
+          <div class="table-container">
+            <table>
+              <thead><tr>
+                <th>Name</th><th>Email</th><th>Role</th>
+                <th>Status</th><th>Records</th><th>Action</th>
+              </tr></thead>
+              <tbody id="admin-users-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- INSIGHTS TAB -->
+        <div class="tab-content" id="admin-insights-tab" style="display:none">
+          <h2 class="section-title">Penalty &amp; Fine Analysis</h2>
+          <p class="muted-note">Penalty rule: <strong>₱1.00 per day</strong> after the return date chosen by the student. It is calculated automatically.</p>
+          <div class="stats-grid">
+            <article class="stat-card fine-card">
+              <span class="stat-icon">₱</span>
+              <span class="stat-label">Pending Fines</span>
+              <strong id="ins-outstanding-fines">₱0.00</strong>
+            </article>
+            <article class="stat-card">
+              <span class="stat-icon">✓</span>
+              <span class="stat-label">Fines Collected</span>
+              <strong id="ins-collected-fines">₱0.00</strong>
+            </article>
+            <article class="stat-card">
+              <span class="stat-icon">◷</span>
+              <span class="stat-label">Overdue Loans</span>
+              <strong id="ins-overdue">0</strong>
+            </article>
+            <article class="stat-card">
+              <span class="stat-icon">▣</span>
+              <span class="stat-label">Pending Returns</span>
+              <strong id="ins-pending-returns">0</strong>
+            </article>
+          </div>
+
+          <h2 class="section-title">Most Requested Genres</h2>
+          <div id="ins-genre-bars" class="bar-chart"></div>
+
+          <h2 class="section-title">Pending Returns</h2>
+          <div class="table-container">
+            <table>
+              <thead><tr>
+                <th>Student</th><th>Book</th><th>Return By</th><th>Status</th><th>Penalty</th>
+              </tr></thead>
+              <tbody id="ins-pending-tbody"></tbody>
+            </table>
+          </div>
+
+          <h2 class="section-title">Popular Books</h2>
+          <div class="table-container">
+            <table>
+              <thead><tr><th>#</th><th>Book</th><th>Borrowed</th><th>Reserved</th></tr></thead>
+              <tbody id="ins-popular-tbody"></tbody>
+            </table>
+          </div>
+
+          <h2 class="section-title">Active Members</h2>
+          <div class="table-container">
+            <table>
+              <thead><tr><th>Student</th><th>Borrowing Now</th><th>Total Borrowed</th><th>Unpaid Fine</th></tr></thead>
+              <tbody id="ins-members-tbody"></tbody>
+            </table>
+          </div>
+
+          <h2 class="section-title">System Lifecycle Log</h2>
+          <p class="muted-note">Every record moves through: New Record → Available → Borrowing → Returned / Withdrawn → Pending Hold → Reserved → Checked Out → Returned / Overdue.</p>
+          <div class="table-container">
+            <table>
+              <thead><tr><th>Date</th><th>Stage</th><th>Book</th><th>Member</th><th>Note</th></tr></thead>
+              <tbody id="ins-log-tbody"></tbody>
+            </table>
+          </div>
+
+          <div class="form-actions">
+            <button class="btn btn-outline" type="button" onclick="exportBackup()">⬇ Download data backup (JSON)</button>
+          </div>
+        </div>
+
+        <!-- PAYMENTS TAB -->
+        <div class="tab-content" id="admin-payments-tab" style="display:none">
+          <div class="panel fine-panel">
+            <h2>Fine Collection</h2>
+            <p>Total penalty fines collected from students.</p>
+            <strong id="admin-total-fines">₱0.00</strong>
+          </div>
+
+          <h2 class="section-title">Payment Records</h2>
+          <div class="table-container">
+            <table>
+              <thead><tr>
+                <th>Reference</th><th>Student</th><th>Method</th>
+                <th>Date</th><th>Amount</th>
+              </tr></thead>
+              <tbody id="admin-payments-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- PAYMENT MODAL -->
+<div class="modal-backdrop" id="payment-modal" style="display:none"
+  role="dialog" aria-modal="true" aria-labelledby="payment-title">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3 id="payment-title">Pay Library Fine</h3>
+      <button class="modal-close" type="button" onclick="closePaymentModal()"
+        aria-label="Close payment window">&times;</button>
+    </div>
+
+    <div id="payment-form-wrap">
+      <p class="modal-desc" id="payment-item-desc"></p>
+
+      <div class="payment-amount-box">
+        <span>Amount due</span>
+        <strong id="payment-modal-amount">₱0.00</strong>
+      </div>
+
+      <form id="payment-form" onsubmit="processPayment(event)" novalidate>
+        <div class="field">
+          <label for="payment-method-select">Payment method</label>
+          <select id="payment-method-select">
+            <option value="Library Desk Cash">Library Desk Cash</option>
+            <option value="GCash">GCash</option>
+            <option value="Maya">Maya</option>
+            <option value="Credit / Debit Card">Credit / Debit Card</option>
+          </select>
+        </div>
+
+        <div id="cash-note" class="modal-note">
+          Choose this to settle your fine with the librarian at the desk. Your fine is marked as paid and a receipt is issued.
+        </div>
+
+        <div id="online-pay-fields" style="display:none">
+          <div class="field">
+            <label for="payment-account-number" id="payment-account-label">Mobile number</label>
+            <input id="payment-account-number" type="text" inputmode="numeric"
+              autocomplete="off" placeholder="09XX XXX XXXX">
+          </div>
+
+          <div id="card-extra-fields" class="card-row" style="display:none">
+            <div class="field">
+              <label for="payment-card-expiry">Expiry (MM/YY)</label>
+              <input id="payment-card-expiry" type="text" inputmode="numeric"
+                autocomplete="off" placeholder="MM/YY" maxlength="5">
+            </div>
+            <div class="field">
+              <label for="payment-card-cvv">Security code</label>
+              <input id="payment-card-cvv" type="password" inputmode="numeric"
+                autocomplete="off" placeholder="CVV" maxlength="4">
+            </div>
+          </div>
+
+          <p class="modal-note">Demo payment only. No real money is charged and card details are never stored.</p>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn btn-outline" type="button" onclick="closePaymentModal()">Cancel</button>
+          <button class="btn btn-primary" type="submit" id="payment-submit-btn">Pay Now</button>
+        </div>
+      </form>
+    </div>
+
+    <div id="payment-receipt" class="receipt-box" style="display:none">
+      <div class="receipt-check">✓</div>
+      <p class="modal-desc">Payment successful. Your fine status has been updated.</p>
+      <strong class="receipt-amount" id="receipt-amount">₱0.00</strong>
+      <div class="receipt-list">
+        <div class="receipt-row"><span>Reference</span><strong id="receipt-ref">—</strong></div>
+        <div class="receipt-row"><span>Method</span><strong id="receipt-method">—</strong></div>
+        <div class="receipt-row"><span>Account</span><strong id="receipt-account">—</strong></div>
+        <div class="receipt-row"><span>Covers</span><strong id="receipt-items">—</strong></div>
+        <div class="receipt-row"><span>Date</span><strong id="receipt-date">—</strong></div>
+      </div>
+      <button class="btn btn-primary btn-block" type="button" onclick="closePaymentModal()">Done</button>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <span class="logo-icon">📚</span>
+      <strong>LibCentral</strong>
+    </div>
+    <p>Library Management System &middot; Borrow, reserve and manage books online.</p>
+    <p class="footer-small">&copy; 2026 LibCentral. Open Monday to Friday 8:00 AM – 5:00 PM, Saturday 8:00 AM – 12:00 PM.</p>
+  </div>
+</footer>
+
+<!-- Login sound: add your own file named login-sound.mp3 next to index.html.
+     If the file is missing, a built-in chime plays instead. -->
+<audio id="loginSound" preload="auto" src="./login-sound.mp3"></audio>
+
+<script src="script.js"></script>
+</body>
+</html>
